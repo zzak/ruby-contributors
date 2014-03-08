@@ -3,10 +3,10 @@ require 'git'
 class Commits
   attr_accessor :sizes, :target, :author, :smallest
 
-  def initialize(path, target=nil, author=nil)
+  def initialize(path, author=nil, target=nil)
     @path = path
-    @target = target
     @author = author
+    @target = target
     @sizes = {
       :small => {:total => 0, :breakdown => ->{
         smalls = {}
