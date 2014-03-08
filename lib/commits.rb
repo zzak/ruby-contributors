@@ -43,13 +43,14 @@ class Commits
 
   def report
     puts <<-eol
-    Commits by number of lines changed by #{@author ? @author : "everyone"}
-      1-20        : #{sizes[:small][:total]}
-      20-50       : #{sizes[:medium]}
-      50-100      : #{sizes[:large]}
-      100-1000    : #{sizes[:xtra_large]}
-      1000-10000  : #{sizes[:xxtra_large]}
-      10000-∞     : #{sizes[:xxxtra_large]}
+Commits by number of lines changed by #{@author ? @author : "everyone"}
+1-20        : #{sizes[:small][:total]}
+20-50       : #{sizes[:medium]}
+50-100      : #{sizes[:large]}
+100-1000    : #{sizes[:xtra_large]}
+1000-10000  : #{sizes[:xxtra_large]}
+10000-∞     : #{sizes[:xxxtra_large]}
+
     eol
 
     if @smallest
