@@ -1,12 +1,12 @@
 require 'git'
 
 class Commits
-  attr_accessor :sizes, :target, :author, :smallest
+  attr_accessor :sizes, :since, :author, :smallest
 
-  def initialize(path, author=nil, target=nil)
+  def initialize(path, author=nil, since=nil)
     @path = path
     @author = author
-    @target = target
+    @since = since
     @sizes = {
       :small => {:total => 0, :breakdown => ->{
         smalls = {}
@@ -29,7 +29,7 @@ class Commits
   end
 
   def commits
-    query = @target ? open_log.since(@target) : open_log
+    query = @since ? open_log.since(@since) : open_log
     return @author ? query.author(@author) : query
   end
 
@@ -41,7 +41,12 @@ class Commits
     return stat
   end
 
-  def report
+  def report_total
+    puts "Total commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}"
+    puts commits.size
+  end
+
+  def report_by_lines_changed
     puts <<-eol
 Commits by number of lines changed by #{@author ? @author : "everyone"}
 1-20        : #{sizes[:small][:total]}
