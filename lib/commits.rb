@@ -3,7 +3,7 @@ require 'git'
 class Commits
   attr_accessor :sizes, :target, :author, :smallest
 
-  def initialize(path, target, author=nil)
+  def initialize(path, target=nil, author=nil)
     @path = path
     @target = target
     @author = author
@@ -29,7 +29,8 @@ class Commits
   end
 
   def commits
-    @author ? open_log : open_log.author(@author)
+    query = @target ? open_log.since(@target) : open_log
+    return @author ? query.author(@author) : query
   end
 
   def lines_changed(commit)
@@ -43,7 +44,7 @@ class Commits
   def report
     puts <<-eol
     Commits by number of lines changed by #{@author ? @author : "everyone"}
-      1-20        : #{sizes[:small].first}
+      1-20        : #{sizes[:small][:total]}
       20-50       : #{sizes[:medium]}
       50-100      : #{sizes[:large]}
       100-1000    : #{sizes[:xtra_large]}
@@ -58,8 +59,8 @@ class Commits
   end
 
   private
-    def open_log
-      Git.open(@path).log(@target)
+    def open_log(n=nil)
+      Git.open(@path).log(n)
     end
 
     def increment_sizes!(stat)

@@ -1,6 +1,6 @@
 desc "Output number of commits grouped by lines changed for everyone"
 task :lines_changed_everyone do
-  commits = Commits.new("./ruby", 2000000)
+  commits = Commits.new("./ruby")
   commits.calculate!
   commits.report
 end
