@@ -1,12 +1,13 @@
 require 'git'
 
 class Commits
-  attr_accessor :sizes, :since, :author, :smallest
+  attr_accessor :sizes, :since, :author, :smallest, :count
 
   def initialize(path, author=nil, since=nil)
     @path = path
     @author = author
     @since = since
+    @count = 0
     @sizes = {
       :small => {:total => 0, :breakdown => ->{
         smalls = {}
@@ -28,6 +29,14 @@ class Commits
     end
   end
 
+  # Introduced [DOC] tag on 2013-10-16
+  def for_docs
+    commits.each do |commit|
+      @count += 1 if doc_commit?(commit.message)
+    end
+    self
+  end
+
   def commits
     query = @since ? open_log.since(@since) : open_log
     return @author ? query.author(@author) : query
@@ -43,6 +52,10 @@ class Commits
 
   def report_total
     puts "Total commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}: #{commits.size}"
+  end
+
+  def report_doc_total
+    puts "Total documentation commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}: #{@count}"
   end
 
   def report_by_lines_changed
@@ -61,6 +74,11 @@ Commits by number of lines changed by #{@author ? @author : "everyone"}
       puts "Breakdown of smallest commits by #{@author ? @author : "everyone"}"
       sizes[:small][:breakdown].each { |key, value| puts "#{key}: #{value}" }
     end
+  end
+
+  def since_doc_tag
+    @since = "2013-10-16"
+    self
   end
 
   private
@@ -84,5 +102,9 @@ Commits by number of lines changed by #{@author ? @author : "everyone"}
       else
         @sizes[:xxxtra_large] += 1
       end
+    end
+
+    def doc_commit?(message)
+      message =~ /\[DOC\]/
     end
 end
