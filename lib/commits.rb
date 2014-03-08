@@ -42,8 +42,7 @@ class Commits
   end
 
   def report_total
-    puts "Total commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}"
-    puts commits.size
+    puts "Total commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}: #{commits.size}"
   end
 
   def report_by_lines_changed
