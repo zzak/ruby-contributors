@@ -12,6 +12,12 @@ task :total do
   commits.report_total
 end
 
+desc "Output number of commits by non-core contributors"
+task :contributions do
+  commits = Commits.new("./ruby", ENV["author"], ENV["since"])
+  commits.contributions.report_contributions
+end
+
 desc "Output total number of commits since the [DOC] tag convention was added"
 task :total_since_doc do
   commits = Commits.new("./ruby", ENV["author"])

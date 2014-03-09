@@ -37,6 +37,15 @@ class Commits
     self
   end
 
+  def contributions
+    commits.each do |commit|
+      if by_third_person?(commit.message)
+        @count += 1
+      end
+    end
+    self
+  end
+
   def commits
     query = @since ? open_log.since(@since) : open_log
     return @author ? query.author(@author) : query
@@ -52,6 +61,10 @@ class Commits
 
   def report_total
     puts "Total commits by #{@author ? @author : "everyone"}#{@since ? " since #{@since}" : ""}: #{commits.size}"
+  end
+
+  def report_contributions
+    puts "Total commits via contributions#{@since ? " since #{@since}" : ""}: #{@count}"
   end
 
   def report_doc_total
@@ -106,5 +119,10 @@ Commits by number of lines changed by #{@author ? @author : "everyone"}
 
     def doc_commit?(message)
       message =~ /\[DOC\]/
+    end
+
+    def by_third_person?(message)
+      message =~ /[bB]y \@[a-zA-Z]+ / ||
+        message =~ /[bB]y [A-Z][a-z]+ [A-Z][a-z]+?/
     end
 end
