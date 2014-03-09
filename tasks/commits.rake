@@ -20,13 +20,13 @@ namespace :commits do
   end
 
   desc "Output total number of commits since the [DOC] tag convention was added"
-  task :total_since_doc do
+  task :since_doc_tag do
     commits = Commits.new("./ruby", ENV["author"])
     commits.since_doc_tag.report_total
   end
 
   desc "Output number of documentation related commits"
-  task :for_docs do
+  task :docs do
     commits = Commits.new("./ruby", ENV["author"], ENV["since"])
     commits.since_doc_tag.for_docs.report_doc_total
   end
