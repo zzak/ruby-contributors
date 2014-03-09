@@ -1,12 +1,13 @@
 require 'git'
 
 class Commits
-  attr_accessor :sizes, :since, :author, :smallest, :count
+  attr_accessor :sizes, :since, :author, :smallest, :count, :core
 
   def initialize(path, author=nil, since=nil)
     @path = path
     @author = author
     @since = since
+    @core = {}
     @count = 0
     @sizes = {
       :small => {:total => 0, :breakdown => ->{
@@ -40,6 +41,11 @@ class Commits
   def contributions
     commits.each do |commit|
       if by_third_person?(commit.message)
+        key = commit.author.name
+        unless @core.key?(key)
+          @core[key] = 0
+        end
+        @core[key] += 1
         @count += 1
       end
     end
@@ -64,6 +70,9 @@ class Commits
   end
 
   def report_contributions
+    puts "Number of commits merged for contributors"
+    @core.sort_by(&:last).reverse[0..14].each { |k,v| puts sprintf("%6d: %s", v, k) }
+
     puts "Total commits via contributions#{@since ? " since #{@since}" : ""}: #{@count}"
   end
 
